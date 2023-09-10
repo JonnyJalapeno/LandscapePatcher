@@ -36,9 +36,14 @@ namespace LandscapePatcher
                                 staticItems.Add(itm);
                         }
                     }
-                    if (File.Exists(staticText.Diffuse?.DataRelativePath)&& File.Exists(staticText.NormalOrGloss?.DataRelativePath) && File.Exists(staticText.Height?.DataRelativePath) && File.Exists(state.DataFolderPath+"textures\\landscape\\parallax"+staticText.Diffuse.ToString())) {
-                        Console.WriteLine(staticText.Diffuse.ToString());
+                    if (staticText.NormalOrGloss != null) {
+                        var length = staticText.NormalOrGloss.ToString().Length;
+                        if (File.Exists(state.DataFolderPath + "\\textures\\" + staticText.Diffuse?.ToString()) && File.Exists(state.DataFolderPath + "\\textures\\" + staticText.NormalOrGloss?.ToString().Substring(length - 6, length)+".dds") && File.Exists(staticText.NormalOrGloss?.DataRelativePath) && File.Exists(staticText.Height?.DataRelativePath))
+                        {
+                            Console.WriteLine(staticText.Diffuse?.ToString());
+                        }
                     }
+                    
                 }
             }
 
