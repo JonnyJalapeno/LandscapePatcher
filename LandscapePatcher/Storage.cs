@@ -11,11 +11,11 @@ namespace LandscapePatcher
 {
     public class Storage
     {
-        public FormKey formKeys;
-        public String formValues;
-        public Storage(FormKey formKey, String formValue) {
-            formKeys = formKey;
-            formValues = formValue;
+        public FormKey formKey;
+        public String formValue;
+        public Storage(FormKey fK, String fV) {
+            formKey = fK;
+            formValue = fV;
         }
     }
 }

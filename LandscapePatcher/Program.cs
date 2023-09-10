@@ -40,10 +40,9 @@ namespace LandscapePatcher
             }
 
 
-                foreach (var patchStatic in state.LoadOrder.PriorityOrder.WinningOverrides<IStaticGetter>())
+            foreach (var patchStatic in state.LoadOrder.PriorityOrder.WinningOverrides<IStaticGetter>())
             {
-                //var winningOverride = winningOverrides.Where(x => x.FormKey == book.FormKey).Last();
-                //var stat = state.PatchMod.Statics.GetOrAddAsOverride(patchStatic);
+                
                 var text = patchStatic.Model?.AlternateTextures;
                 if(text != null)
                 {
@@ -67,17 +66,26 @@ namespace LandscapePatcher
                                     if (textureSet.EditorID.Contains("Landscape")) {
                                         var tempname = "Static" + textureSet.EditorID;
                                         foreach (var item in staticItems) {
-                                            if (tempname == item.formValues) { 
-                                                
+                                            if (tempname == item.formValue) {
+                                                newAltText.NewTexture.SetTo(item.formKey);
+                                                check = true;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+                        alternateTextures.Add(newAltText);
                     }
-
-                }             
+                    if(check)
+                    {
+                        var stat = state.PatchMod.Statics.GetOrAddAsOverride(patchStatic);
+                        foreach(var item in alternateTextures)
+                        {
+                            stat.Model?.AlternateTextures?.SetTo(item);
+                        }
+                    }
+                } 
             }
         }
     }
