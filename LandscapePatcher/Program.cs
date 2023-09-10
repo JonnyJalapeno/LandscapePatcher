@@ -36,14 +36,21 @@ namespace LandscapePatcher
                                 staticItems.Add(itm);
                         }
                     }
-                    if (staticText.NormalOrGloss != null) {
+                    if (staticText.NormalOrGloss != null)
+                    {
                         var length = staticText.NormalOrGloss.ToString().Length;
-                        if (File.Exists(state.DataFolderPath + "\\textures\\" + staticText.Diffuse?.ToString()) && File.Exists(state.DataFolderPath + "\\textures\\" + staticText.NormalOrGloss?.ToString().Substring(length - 6, length)+".dds") && File.Exists(staticText.NormalOrGloss?.DataRelativePath) && File.Exists(staticText.Height?.DataRelativePath))
+                        var parallaxPath = state.DataFolderPath + "\\" + staticText.Diffuse?.ToString();
+                        var alphaDiffusePath = state.DataFolderPath + "\\" + staticText.NormalOrGloss?.ToString().Substring(0, length - 6) + ".dds";
+                        var normalPath = state.DataFolderPath + "\\" + staticText.NormalOrGloss?.ToString();
+                        var heightPath = state.DataFolderPath + "\\" + staticText.NormalOrGloss?.ToString().Substring(0, length - 6) + "_p.dds";
+
+                        if (File.Exists(parallaxPath) && File.Exists(alphaDiffusePath) && File.Exists(normalPath) && File.Exists(heightPath))
                         {
-                            Console.WriteLine(staticText.Diffuse?.ToString());
+                            TextureSet txst = new TextureSet();
+                            var stat = state.PatchMod.TextureSets.Add
                         }
                     }
-                    
+
                 }
             }
 
