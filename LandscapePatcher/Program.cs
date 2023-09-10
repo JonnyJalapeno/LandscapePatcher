@@ -25,7 +25,7 @@ namespace LandscapePatcher
         
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
-        {
+        {       
             List<Storage> staticItems = new List<Storage>();
             foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides()) { 
                 if(staticText != null)
@@ -35,6 +35,9 @@ namespace LandscapePatcher
                                 Storage itm = new Storage(staticText.FormKey, staticText.EditorID);
                                 staticItems.Add(itm);
                         }
+                    }
+                    if (File.Exists(staticText.Diffuse?.DataRelativePath)&& File.Exists(staticText.NormalOrGloss?.DataRelativePath) && File.Exists(staticText.Height?.DataRelativePath) && File.Exists(state.DataFolderPath+"textures\\landscape\\parallax"+staticText.Diffuse.ToString())) {
+                        Console.WriteLine(staticText.Diffuse.ToString());
                     }
                 }
             }
