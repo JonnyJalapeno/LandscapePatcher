@@ -40,20 +40,20 @@ namespace LandscapePatcher
             }
 
 
-            foreach (var patchStatic in state.LoadOrder.PriorityOrder.WinningOverrides<IStaticGetter>())
+            foreach (var patchStatic in state.LoadOrder.PriorityOrder.Static().WinningOverrides(true))
             {
                 
                 var text = patchStatic.Model?.AlternateTextures;
                 if(text != null)
                 {
-                    List<AlternateTexture> alternateTextures = new List<AlternateTexture>();    
-                    AlternateTexture newAltText = new AlternateTexture();
+                    List<AlternateTexture> alternateTextures = new List<AlternateTexture>();
                     bool check = false;
                     foreach (var altText in text) {
+                        
                         if (altText != null)
                         {
-                            var name = altText.NewTexture.TryResolve(state.LinkCache, out var textureSet);
-
+                            AlternateTexture newAltText = new AlternateTexture();
+                            var name = altText.NewTexture.TryResolve(state.LinkCache, out var textureSet); 
                             newAltText.Index = altText.Index;
                             newAltText.Name = altText.Name;
                             
@@ -73,17 +73,15 @@ namespace LandscapePatcher
                                         }
                                     }
                                 }
+                                alternateTextures.Add(newAltText);
                             }
-                        }
-                        alternateTextures.Add(newAltText);
+                            
+                        }    
                     }
                     if(check)
                     {
                         var stat = state.PatchMod.Statics.GetOrAddAsOverride(patchStatic);
-                        foreach(var item in alternateTextures)
-                        {
-                            stat.Model?.AlternateTextures?.SetTo(item);
-                        }
+                        stat.Model?.AlternateTextures?.SetTo(alternateTextures);
                     }
                 } 
             }
