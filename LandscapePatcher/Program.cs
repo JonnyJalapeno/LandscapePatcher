@@ -22,25 +22,61 @@ namespace LandscapePatcher
                 .Run(args);
         }
 
-        
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
-        {
+        {       
             List<Storage> staticItems = new List<Storage>();
-            foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides()) { 
+            foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides(true)) { 
                 if(staticText != null)
-                {
-                    if (staticText.EditorID != null) {
-                        if (staticText.EditorID.Contains("Static")) {
-                                Storage itm = new Storage(staticText.FormKey, staticText.EditorID);
-                                staticItems.Add(itm);
+                {                   
+                    if (staticText.Diffuse != null)
+                    {
+                        var directory = Path.GetDirectoryName(staticText.Diffuse);
+                        var fileName = Path.GetFileName(staticText.Diffuse);
+                        var gamepath = state.DataFolderPath+"\\textures\\";
+                        switch (fileName)
+                        {
+                            case "Snow01Landscape.dds":
+                                fileName = "Snow01.dds";
+                                break;
+                            case "Snow02Landscape.dds":
+                                fileName = "Snow02.dds";
+                                break;
+                        }
+
+                        var parallaxPath = directory+"\\parallax\\"+fileName;
+                        var alphaDiffusePath = directory+"\\"+fileName;
+                        var normalPath = directory+"\\"+ fileName.Insert(fileName.Length-4,"_n");
+                        var heightPath = directory + "\\" + fileName.Insert(fileName.Length - 4, "_p");
+
+
+                        if (File.Exists(gamepath + parallaxPath) && File.Exists(gamepath + alphaDiffusePath) && File.Exists(gamepath + normalPath) && File.Exists(gamepath + heightPath))
+                        {
+                            var txst = state.PatchMod.TextureSets.AddNew();
+                            txst.EditorID = "Static" + staticText.EditorID;
+                            txst.Diffuse = alphaDiffusePath;
+                            txst.NormalOrGloss = normalPath;
+                            txst.Height = heightPath;
+                            var stat = state.PatchMod.TextureSets.GetOrAddAsOverride(staticText);
+                            stat.Diffuse = parallaxPath;
                         }
                     }
                 }
             }
 
+            foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides(true)) {
+                if (staticText.EditorID != null)
+                {
+                    if (staticText.EditorID.Contains("Static"))
+                    {
+                        Storage itm = new Storage(staticText.FormKey, staticText.EditorID);
+                        staticItems.Add(itm);
+                    }
+                }
+            }
 
-            foreach (var patchStatic in state.LoadOrder.PriorityOrder.Static().WinningOverrides(true))
+
+                foreach (var patchStatic in state.LoadOrder.PriorityOrder.Static().WinningOverrides(true))
             {
                 
                 var text = patchStatic.Model?.AlternateTextures;
