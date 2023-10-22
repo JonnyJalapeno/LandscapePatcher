@@ -28,12 +28,14 @@ namespace LandscapePatcher
             List<Storage> staticItems = new List<Storage>();
             foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides(true)) { 
                 if(staticText != null)
-                {                   
+                {
+                    if (staticText.EditorID != null && staticText.EditorID.Contains("DynDOLOD"))
+                    {
+                        continue;
+                    }
                     if (staticText.Diffuse != null)
                     {
-                        if (staticText.EditorID != null && staticText.EditorID.Contains("DynDOLOD")) {
-                            continue;
-                        }
+                        
                         var directory = Path.GetDirectoryName(staticText.Diffuse);
                         var fileName = Path.GetFileName(staticText.Diffuse);
                         var gamepath = state.DataFolderPath+"\\textures\\";
