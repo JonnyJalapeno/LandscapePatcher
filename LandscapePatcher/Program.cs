@@ -31,6 +31,9 @@ namespace LandscapePatcher
                 {                   
                     if (staticText.Diffuse != null)
                     {
+                        if (staticText.EditorID != null && staticText.EditorID.Contains("DynDOLOD")) {
+                            continue;
+                        }
                         var directory = Path.GetDirectoryName(staticText.Diffuse);
                         var fileName = Path.GetFileName(staticText.Diffuse);
                         var gamepath = state.DataFolderPath+"\\textures\\";
