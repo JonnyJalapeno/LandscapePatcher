@@ -26,18 +26,18 @@ namespace LandscapePatcher
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {       
             List<Storage> staticItems = new List<Storage>();
-            foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides(true)) { 
-                if(staticText != null)
+            foreach (ITextureSetGetter txtSet in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides()) { 
+                if(txtSet != null)
                 {
-                    if (staticText.EditorID != null && staticText.EditorID.Contains("DynDOLOD"))
+                    if (txtSet.EditorID != null && txtSet.EditorID.Contains("DynDOLOD"))
                     {
                         continue;
                     }
-                    if (staticText.Diffuse != null)
+                    if (txtSet.Diffuse != null)
                     {
                         
-                        var directory = Path.GetDirectoryName(staticText.Diffuse);
-                        var fileName = Path.GetFileName(staticText.Diffuse);
+                        var directory = Path.GetDirectoryName(txtSet.Diffuse);
+                        var fileName = Path.GetFileName(txtSet.Diffuse);
                         var gamepath = state.DataFolderPath+"\\textures\\";
                         switch (fileName)
                         {
@@ -58,18 +58,18 @@ namespace LandscapePatcher
                         if (File.Exists(gamepath + parallaxPath) && File.Exists(gamepath + alphaDiffusePath) && File.Exists(gamepath + normalPath) && File.Exists(gamepath + heightPath))
                         {
                             var txst = state.PatchMod.TextureSets.AddNew();
-                            txst.EditorID = "Static" + staticText.EditorID;
+                            txst.EditorID = "Static" + txtSet.EditorID;
                             txst.Diffuse = alphaDiffusePath;
                             txst.NormalOrGloss = normalPath;
                             txst.Height = heightPath;
-                            var stat = state.PatchMod.TextureSets.GetOrAddAsOverride(staticText);
+                            var stat = state.PatchMod.TextureSets.GetOrAddAsOverride(txtSet);
                             stat.Diffuse = parallaxPath;
                         }
                     }
                 }
             }
 
-            foreach (var staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides(true)) {
+            foreach (ITextureSetGetter staticText in state.LoadOrder.PriorityOrder.TextureSet().WinningOverrides()) {
                 if (staticText.EditorID != null)
                 {
                     if (staticText.EditorID.Contains("Static"))
@@ -81,7 +81,7 @@ namespace LandscapePatcher
             }
 
 
-                foreach (var patchStatic in state.LoadOrder.PriorityOrder.Static().WinningOverrides(true))
+            foreach (IStaticGetter patchStatic in state.LoadOrder.PriorityOrder.Static().WinningOverrides())
             {
                 
                 var text = patchStatic.Model?.AlternateTextures;
